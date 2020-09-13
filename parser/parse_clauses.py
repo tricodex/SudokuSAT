@@ -13,14 +13,15 @@ sudoku_rules = {
 # Converts one line of dot format (one puzzle) into DIMACS
 def get_dimacs_string(line):
     sudoku_string = ""
-    cnt = 3
+    cnt = 0
+    sudoku_size =  math.isqrt(len(line))
     for tok in line:
         cnt += 1
         if tok.isnumeric():
-            sudoku_string += str(cnt // math.isqrt(len(line)))
-            sudoku_string += str(cnt % math.isqrt(len(line))+1)
+            sudoku_string += str((cnt - 1) // sudoku_size + 1)
+            sudoku_string += str(cnt % sudoku_size if cnt % sudoku_size != 0 else sudoku_size)
             sudoku_string += tok
-            sudoku_string += " 0/n"
+            sudoku_string += " 0\n"
     return sudoku_string
 
 
