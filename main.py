@@ -1,5 +1,4 @@
 import argparse
-import re
 
 def main():
     ap = argparse.ArgumentParser()
@@ -10,6 +9,6 @@ def main():
     print("Solving SUDOKU SAT with {} on {}...".format(args['strategy'],args['puzzle_filename']))
 
     # TODO: call the parser for the puzzle and solver with the strategy provided
-    
+
 if __name__ == "__main__":
     main()
