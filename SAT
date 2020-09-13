@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Shell script that simply calls our python entry point 
+python main.py $1 $2
