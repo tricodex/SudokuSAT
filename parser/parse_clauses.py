@@ -10,6 +10,12 @@ sudoku_rules = {
    16 : "sudoku-rules-16x16.txt"
 }
 
+def letter_gen(x):
+    if x >= 10:
+        return chr(ord('A') + x - 10)
+    else:
+        return str(x)
+
 # Converts one line of dot format (one puzzle) into DIMACS
 def get_dimacs_string(line):
     sudoku_string = ""
@@ -17,9 +23,9 @@ def get_dimacs_string(line):
     sudoku_size =  math.isqrt(len(line))
     for tok in line:
         cnt += 1
-        if tok.isnumeric():
-            sudoku_string += str((cnt - 1) // sudoku_size + 1)
-            sudoku_string += str(cnt % sudoku_size if cnt % sudoku_size != 0 else sudoku_size)
+        if tok.isalnum():
+            sudoku_string += letter_gen((cnt - 1) // sudoku_size + 1)
+            sudoku_string += letter_gen(cnt % sudoku_size if cnt % sudoku_size != 0 else sudoku_size)
             sudoku_string += tok
             sudoku_string += " 0\n"
     return sudoku_string
