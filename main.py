@@ -1,5 +1,5 @@
 import argparse
-import parser.parse_clauses
+from solver.sat import solve_all
 
 def main():
     ap = argparse.ArgumentParser()
@@ -10,6 +10,7 @@ def main():
     print("Solving SUDOKU SAT with {} on {}...".format(args['strategy'],args['puzzles_filename']))
 
     # TODO: call the parser for the puzzle and solver with the strategy provided
+    solve_all(args['strategy'],args['puzzles_filename'])
 
 if __name__ == "__main__":
     main()
