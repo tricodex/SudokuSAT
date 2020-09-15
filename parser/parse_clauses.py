@@ -1,8 +1,8 @@
-from sympy.logic.utilities.dimacs import load_file
+from sympy.logic.utilities.dimacs import load_file,load
 from os.path import join
 import math
 
-sudoku_rules_path = "../input"
+sudoku_rules_path = "input"
 
 sudoku_rules = {
     4 : "sudoku-rules-4x4.txt",
@@ -10,6 +10,7 @@ sudoku_rules = {
    16 : "sudoku-rules-16x16.txt"
 }
 
+# For SUDOKU-16, 10-16 become A-E
 def letter_gen(x):
     if x >= 10:
         return chr(ord('A') + x - 10)
@@ -32,13 +33,17 @@ def get_dimacs_string(line):
 
 
 # Gets the SUDOKU rules corresponding to the size as CNF clause
-def get_sudoku_rules_dimacs(sudoku_size):
+def parse_sudoku_rules(sudoku_size):
     return load_file(join(sudoku_rules_path, sudoku_rules[sudoku_size]))
 
 # Gets the puzzles from the file as SAT CNF clauses
-def parse_puzzles(puzzles_file):
+def parse_sudoku_puzzles(puzzles_file):
     puzzles = []
+    line = puzzles_file.readline()
+    puzzles.append(load(get_dimacs_string(line)))
+    puzzle_size = math.isqrt(len(line))
+
     for line in puzzles_file.readline():
-        puzzle_size = sqrt(len(line))
-        puzzle.append(load(get_dimacs_string(line)))
-    return [puzzle_size, puzzles]
+        puzzles.append(load(get_dimacs_string(line)))
+
+    return puzzle_size, puzzles

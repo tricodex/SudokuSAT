@@ -1,5 +1,6 @@
 from parse_clauses import *
 import unittest
+from tempfile import TemporaryFile
 
 sudoku_line_4 = "...3..4114..3..."
 sudoku_dimacs_4 = """143 0
@@ -55,6 +56,16 @@ class TestParseMethods(unittest.TestCase):
         self.assertEqual(get_dimacs_string(sudoku_line_9), sudoku_dimacs_9)
         self.maxDiff = None
         self.assertEqual(get_dimacs_string(sudoku_line_16)[:len(sudoku_dimacs_16)], sudoku_dimacs_16)
+
+    def test_parse_puzzles(self):
+        with TemporaryFile('w+') as f:
+            f.write(sudoku_line_4)
+            f.seek(0)
+            sudoku_size, sudoku_clauses = parse_sudoku_puzzles(f)
+            self.assertEqual(sudoku_size, 4)
+
+    def test_parse_sudoku_rules(self):
+        sdk4 = parse_sudoku_rules(4);
 
 if __name__ == '__main__':
     unittest.main()
