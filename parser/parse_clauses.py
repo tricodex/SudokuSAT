@@ -1,6 +1,7 @@
-from sympy.logic.utilities.dimacs import load_file,load
+#from sympy.logic.utilities.dimacs import load_file,load
 from os.path import join
 import math
+import re
 
 sudoku_rules_path = "input"
 
@@ -34,16 +35,48 @@ def get_dimacs_string(line):
 
 # Gets the SUDOKU rules corresponding to the size as CNF clause
 def parse_sudoku_rules(sudoku_size):
-    return load_file(join(sudoku_rules_path, sudoku_rules[sudoku_size]))
+    return load_dimacs_file(join(sudoku_rules_path, sudoku_rules[sudoku_size]))
 
 # Gets the puzzles from the file as SAT CNF clauses
 def parse_sudoku_puzzles(puzzles_file):
     puzzles = []
+    all_predicates = set()
     line = puzzles_file.readline()
-    puzzles.append(load(get_dimacs_string(line)))
+    clauses, predicates = dimacs_to_cnf(get_dimacs_string(line))
+    puzzles.append(clauses)
+    all_predicates = all_predicates.union(predicates)
     puzzle_size = math.isqrt(len(line))
 
     for line in puzzles_file.readline():
-        puzzles.append(load(get_dimacs_string(line)))
+        clauses, predicates = dimacs_to_cnf(get_dimacs_string(line))
+        puzzles.append(clauses)
+        all_predicates = all_predicates.union(predicates)
+    return puzzle_size, puzzles, all_predicates
 
-    return puzzle_size, puzzles
+# Converts a string in DIMACS format to a CNF as a list of lists
+# Does not validate DIMACS format, assumes input is correct
+def dimacs_to_cnf(dimacs_string):
+    clauses = []
+    predicates = set()
+    rows = dimacs_string.split('\n')
+    # Exclude comments or summary
+    exclusion_regex = re.compile('(c.*|p\s*cnf\s*(\d*)\s*(\d*))')
+
+    for row in rows:
+        if not exclusion_regex.match(row):
+            literals = row.rstrip('0').split()
+            clause = set()
+            for literal in literals:
+                int_literal = int(literal)
+                clause.add(int_literal)
+                predicates.add(abs(int_literal))
+            if len(clause) > 0:
+                clauses.append(clause)
+    return clauses, predicates
+
+# Reads a DIMACS from a file into a CNF as a list of lists
+def load_dimacs_file(filename):
+    f = open(filename)
+    content = f.read()
+    f.close()
+    return dimacs_to_cnf(content)

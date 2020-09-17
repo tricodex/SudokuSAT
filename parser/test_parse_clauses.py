@@ -10,6 +10,9 @@ sudoku_dimacs_4 = """143 0
 324 0
 413 0
 """
+sudoku_clauses_4 = [[{143},{234},{241},{311},{324},{413}]]
+
+sudoku_predicates_4 = {143, 234, 241, 311, 324, 413}
 
 sudoku_line_9 = "52...6.........7.13...........4..8..6......5...........418.........3..2...87....."
 sudoku_dimacs_9 = """115 0
@@ -49,6 +52,19 @@ sudoku_dimacs_16 ="""111 0
 39F 0
 """
 
+generic_dimacs = """
+c this is an example
+p cnf 4 4
+1 -2 0
+2 3 0
+1 3 4 0
+-1 0
+"""
+
+generic_clauses = [{1,-2},{2,3},{1,3,4},{-1}]
+
+generic_predicates = {1,2,3,4}
+
 class TestParseMethods(unittest.TestCase):
 
     def test_get_dimacs_string(self):
@@ -61,11 +77,18 @@ class TestParseMethods(unittest.TestCase):
         with TemporaryFile('w+') as f:
             f.write(sudoku_line_4)
             f.seek(0)
-            sudoku_size, sudoku_clauses = parse_sudoku_puzzles(f)
+            sudoku_size, sudoku_clauses, sudoku_predicates = parse_sudoku_puzzles(f)
             self.assertEqual(sudoku_size, 4)
+            self.assertEqual(sudoku_clauses, sudoku_clauses_4)
+            self.assertEqual(sudoku_predicates, sudoku_predicates_4)
 
     def test_parse_sudoku_rules(self):
-        sdk4 = parse_sudoku_rules(4);
+        sdk4, prd4 = parse_sudoku_rules(4);
+
+    def test_dimacs_to_cnf(self):
+        clauses, predicates = dimacs_to_cnf(generic_dimacs)
+        self.assertEqual(clauses, generic_clauses)
+        self.assertEqual(predicates, generic_predicates)
 
 if __name__ == '__main__':
     unittest.main()
