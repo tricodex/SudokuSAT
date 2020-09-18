@@ -53,7 +53,7 @@ def parse_sudoku_puzzles(puzzles_file):
         all_predicates = all_predicates.union(predicates)
     return puzzle_size, puzzles, all_predicates
 
-# Converts a string in DIMACS format to a CNF as a list of lists
+# Converts a string in DIMACS format to a CNF as a list of sets
 # Does not validate DIMACS format, assumes input is correct
 def dimacs_to_cnf(dimacs_string):
     clauses = []
@@ -67,14 +67,14 @@ def dimacs_to_cnf(dimacs_string):
             literals = row.rstrip('0').split()
             clause = set()
             for literal in literals:
-                int_literal = int(literal)
-                clause.add(int_literal)
-                predicates.add(abs(int_literal))
+                #int_literal = int(literal)
+                clause.add(literal)
+                predicates.add(literal.lstrip('-'))
             if len(clause) > 0:
                 clauses.append(clause)
     return clauses, predicates
 
-# Reads a DIMACS from a file into a CNF as a list of lists
+# Reads a DIMACS from a file into a CNF expression as a list of sets
 def load_dimacs_file(filename):
     f = open(filename)
     content = f.read()

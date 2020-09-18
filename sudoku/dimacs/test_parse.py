@@ -1,4 +1,4 @@
-from parse_clauses import *
+from .parse import *
 import unittest
 from tempfile import TemporaryFile
 
@@ -10,9 +10,9 @@ sudoku_dimacs_4 = """143 0
 324 0
 413 0
 """
-sudoku_clauses_4 = [[{143},{234},{241},{311},{324},{413}]]
+sudoku_clauses_4 = [[{'143'},{'234'},{'241'},{'311'},{'324'},{'413'}]]
 
-sudoku_predicates_4 = {143, 234, 241, 311, 324, 413}
+sudoku_predicates_4 = {'143', '234', '241', '311', '324', '413'}
 
 sudoku_line_9 = "52...6.........7.13...........4..8..6......5...........418.........3..2...87....."
 sudoku_dimacs_9 = """115 0
@@ -61,9 +61,20 @@ p cnf 4 4
 -1 0
 """
 
-generic_clauses = [{1,-2},{2,3},{1,3,4},{-1}]
+generic_clauses = [{'1','-2'},{'2','3'},{'1','3','4'},{'-1'}]
 
-generic_predicates = {1,2,3,4}
+generic_predicates = {'1','2','3','4'}
+
+generic_dimacs_letters = """
+c this is an example
+p cnf 2 2
+B -A 0
+B 0
+"""
+
+generic_clauses_letters = [{'-A','B'},{'B'}]
+
+generic_predicates_letters = {'A','B'}
 
 class TestParseMethods(unittest.TestCase):
 
@@ -89,6 +100,10 @@ class TestParseMethods(unittest.TestCase):
         clauses, predicates = dimacs_to_cnf(generic_dimacs)
         self.assertEqual(clauses, generic_clauses)
         self.assertEqual(predicates, generic_predicates)
+
+        clauses, predicates = dimacs_to_cnf(generic_dimacs_letters)
+        self.assertEqual(clauses, generic_clauses_letters)
+        self.assertEqual(predicates, generic_predicates_letters)
 
 if __name__ == '__main__':
     unittest.main()

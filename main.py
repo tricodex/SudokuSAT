@@ -1,5 +1,5 @@
 import argparse
-from solver.sat import solve_all
+from sudoku.solver.sat import solve_all
 
 def main():
     ap = argparse.ArgumentParser()
